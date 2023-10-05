@@ -1,37 +1,33 @@
-NAME = webserv
-
-
-SRCDIR = src
-
-INCDIR = inc
-
-OBJDIR = obj
-
-
-SRCS = main.cpp	\
-
-OBJS = $(OBJDIR)/$(SRCS:.cpp=.o)
+NAME = WebServ
 
 CC = c++
+CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address -std=c++98
+RM = rm -f
 
-FLAGS = -Wall -Werror -Wextra -std=98 -pedantic # -g3 -fsanitize
+FILE =	src/main \
+		src/server \
 
+SRCS = $(addsuffix .cpp, $(FILE))
+OBJS = $(addsuffix .o, $(FILE))
 
-all: $(NAME)
+all : $(NAME)
 
 $(NAME) : $(OBJS)
-	$(CC) $(FLAGS) $(OBJS) -o $(NAME)
+	$(CC) $(CFLAGS) $^ -o $@
 
-$(OBJDIR)/%.o : $(SRCDIR)/%.cpp
-	@mkdir -p $(OBJDIR)
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(INCDIR)
+.cpp.o : $(SRCS)
+	$(CC) $(CFLAGS) -c $^ -o $@
 
 clean:
-	@rm -rf $(OBJDIR)
+	@echo "$(WHT)Removing o-files...$(EOC)"
+	$(RM) $(OBJS)
+	@echo "$(GREEN)clean done.$(EOC)"
 
 fclean: clean
-	@rm -rf $(NAME)
+	@echo "$(WHT)Removing binary -files...$(EOC)"
+	$(RM) $(NAME)
+	@echo "$(GREEN)fclean done.$(EOC)"
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: clean re fclean all
